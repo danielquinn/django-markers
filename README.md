@@ -39,6 +39,10 @@ The same arguments passed to the template tag can be passed in a URL:
 
 ## Installation
 
+You can install it from GitHub using `pip`:
+
+    $ pip install git+https://github.com/danielquinn/django-markers.git#egg=django-markers
+
 In your `settings.py`:
 
     INSTALLED_APPS = (
@@ -46,9 +50,13 @@ In your `settings.py`:
         "markers",
     )
 
-And if you want to make use of the direct URL requests, you'll need to add this to your core `urls.py`:
+And if you want to make use of the direct URL requests, you'll need to add this to your `urls.py`:
 
     url(r"^some/arbitrary/path/", include("markers.urls")),
+
+So for example, you would have something like this in your `urls.py`:
+
+    url(r"^mapping/markers/", include("markers.urls")),
 
 
 ### The Templates
