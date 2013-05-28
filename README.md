@@ -24,8 +24,8 @@ but both will work anyway.
 
 This will generate a media URL pointing to a newly-created marker based on a
 `template.png`, with the text `42`, positioned `3` pixels right, and `3` pixels
-down from the upper left corner of the template, with an opacity of 50%, a
-hue-shift of 105, and using the hex colour `#333333` for the text.  All of the
+down from the upper left corner of the template, with an opacity of `50%`, a
+hue-shift of `105`, and using the hex colour `#333333` for the text.  All of the
 arguments, save for the first, are optional:
 
     {% marker 'path/to/template.png' text='42' text_x=3 text_y=3 opacity=0.5 hue=105 text_colour='333333' %}
