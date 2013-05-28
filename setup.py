@@ -17,6 +17,7 @@ setup(
     url='https://github.com/danielquinn/django-markers/',
     author='Daniel Quinn',
     author_email='me@danielquinn.org',
+    install_requires=["PIL","numpy",],
     classifiers=[
         'Environment :: Web Environment',
         'Framework :: Django',
