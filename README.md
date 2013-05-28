@@ -15,10 +15,10 @@ other stuff out there for that sort of thing.
 
 ## How
 
-You can reference the markers in two ways: using a django template tag, or
-directly via URL parameters.  The former is preferred, and the latter is not
-recommended, since it requires a hit to your application server every time,
-but both will work anyway.
+You can reference the markers in three ways: using a django template tag, via
+URL parameters, or in Python, by using the `Marker` class.  The preferred
+method is the template tag, and I don't recommend using direct URL requests,
+since it requires a hit to your application server every time.
 
 ### Using a Template Tag:
 
@@ -28,15 +28,20 @@ down from the upper left corner of the template, with an opacity of `50%`, a
 hue-shift of `105`, and using the hex colour `#333333` for the text.  All of the
 arguments, save for the first, are optional:
 
-    {% marker 'path/to/template.png' text='42' text_x=3 text_y=3 opacity=0.5 hue=105 text_colour='333333' %}
+```django
+{% load markers %}
+{% marker 'path/to/template.png' text='42' text_x=3 text_y=3 opacity=0.5 hue=105 text_colour='333333' %}
+```
 
 Typically, you'll use this in your template to assign marker paths to some
 javascript variables:
 
-    <script>
-      var marker1 = "{% marker 'path/to/template.png' text='1' %}";
-      var marker2 = "{% marker 'path/to/template.png' text='3' hue=105 %}";
-    </script>
+```django
+<script>
+  var marker1 = "{% marker 'path/to/template.png' text='1' %}";
+  var marker2 = "{% marker 'path/to/template.png' text='3' hue=105 %}";
+</script>
+```
 
 After you have the URLs in your Javascript, you can do whatever you like with
 them, they're just URLs to existing static files.
@@ -49,27 +54,54 @@ The same arguments passed to the template tag can be passed in a URL:
     https://localhost:8000/markers/path/to/template.png?text=42&opacity=0.5&text_x=3&text_y=3&text_colour=333333&hue=105
 
 
+### Using the Python Model
+
+Marker generation is as easy as instantiating a model:
+
+```python
+from markers.models import Marker
+
+mymarker = Marker(
+    "path/to/template.png",
+    text="42",
+    opacity=0.5,
+    text_x=3,
+    text_y=3,
+    text_colour="333333",
+    hue=105
+)
+```
+
+
 ## Installation
 
 You can install it from GitHub using `pip`:
 
-    $ pip install git+https://github.com/danielquinn/django-markers.git#egg=django-markers
+```bash
+$ pip install git+https://github.com/danielquinn/django-markers.git#egg=django-markers
+```
 
 In your `settings.py`:
 
-    INSTALLED_APPS = (
-        ...
-        "markers",
-    )
+```python
+INSTALLED_APPS = (
+    ...
+    "markers",
+)
+```
 
 And if you want to make use of the direct URL requests, you'll need to add this
 to your `urls.py`:
 
-    url(r"^some/arbitrary/path/", include("markers.urls")),
+```python
+url(r"^some/arbitrary/path/", include("markers.urls")),
+```
 
 So for example, you would have something like this in your `urls.py`:
 
-    url(r"^mapping/markers/", include("markers.urls")),
+```python
+url(r"^mapping/markers/", include("markers.urls")),
+```
 
 
 ### The Templates
