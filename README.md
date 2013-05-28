@@ -73,6 +73,19 @@ mymarker = Marker(
 ```
 
 
+## The Templates
+
+The template path you pass to `django-markers`, must be part of one of your
+apps, and referenced as such.  So for example, if you have a template living in
+`mapping/static/mapping/img/markers/mytemplate.png`, the argument you're
+looking for is: `mapping/img/markers/mytemplate.png`.
+
+If you're calling the URL directly, then you'll append this path to the URL
+like so:
+
+    https://localhost:8000/markers/mapping/img/markers/mytemplate.png?hue=105&opacity=0.8
+
+
 ## Installation
 
 You can install it from GitHub using `pip`:
@@ -104,13 +117,12 @@ url(r"^mapping/markers/", include("markers.urls")),
 ```
 
 
-### The Templates
+### Requirements
 
-The template path you pass to `django-markers`, either as a URL argument or in
-a template tag must be part of one of your apps, and referenced as such.  So
-for example, if you have a template living in
-`mapping/static/mapping/img/markers/mytemplate.png`, the argument you're
-looking for is: `mapping/img/markers/mytemplate.png`.
+We're doing image processing here, so `PIL` is required.  You should probably
+use `Pillow` though, since that's what this was developed against.
+Additionally, `numpy` is required to handle the hue-shifting.  Both will
+install automatically if you follow the installation instructions above.
 
 
 ## Licensing
