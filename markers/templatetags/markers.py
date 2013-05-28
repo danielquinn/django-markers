@@ -1,21 +1,27 @@
 from django import template as django_template
 
-from ..exceptions import InvalidTemplateError, InvalidColourError, InvalidOpacityError
+from ..exceptions import (
+    InvalidTemplateError,
+    InvalidColourError,
+    InvalidOpacityError,
+    InvalidHueError
+)
 from ..models import Marker
 
 register = django_template.Library()
 
 @register.simple_tag
-def marker(template=None, opacity=1, text="", x=0, y=0, size=10, colour="000000"):
+def marker(template, hue=0, opacity=1, text="", text_x=0, text_y=0, text_size=10, text_colour="000000"):
 
     try:
         marker = Marker(
-            template=template,
+            template,
+            hue=hue,
+            opacity=opacity,
             text=text,
-            position=(x,y),
-            size=size,
-            colour=colour,
-            opacity=opacity
+            text_position=(text_x, text_y),
+            text_size=text_size,
+            text_colour=text_colour,
         )
     except (InvalidTemplateError, InvalidColourError, InvalidOpacityError):
         return ""

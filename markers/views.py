@@ -4,7 +4,12 @@ from django.http import HttpResponse, HttpResponseBadRequest
 from django.views.generic import View
 
 from .models import Marker
-from .exceptions import InvalidTemplateError, InvalidColourError, InvalidOpacityError
+from .exceptions import (
+    InvalidTemplateError, 
+    InvalidColourError, 
+    InvalidOpacityError, 
+    InvalidHueError
+)
 
 class MarkerView(View):
 
@@ -19,13 +24,14 @@ class MarkerView(View):
         try:
             marker = Marker(
                 template=template,
+                hue=self._get_int("hue", 0),
                 text=request.GET.get("text",""),
-                position=(self._query_int("x", 0), self._query_int("y", 0)),
-                size=self._query_int("size", 11),
-                colour=self.request.GET.get("colour", "000000"),
+                text_position=(self._get_int("text_x", 0), self._get_int("text_y", 0)),
+                text_size=self._get_int("text_size", 11),
+                text_colour=self.request.GET.get("text_colour", "000000"),
                 opacity=opacity
             )
-        except (InvalidTemplateError, InvalidColourError, InvalidOpacityError) as e:
+        except (InvalidTemplateError, InvalidColourError, InvalidOpacityError, InvalidHueError) as e:
             return HttpResponseBadRequest(e)
 
         response = HttpResponse(mimetype="image/png")
@@ -34,7 +40,7 @@ class MarkerView(View):
         return response
 
 
-    def _query_int(self, key, default):
+    def _get_int(self, key, default):
 
         r = default
         try:

@@ -1,62 +1,85 @@
-import hashlib, os, re
-
-from django.conf import settings
-from django.contrib.staticfiles.finders import FileSystemFinder, AppDirectoriesFinder
+import colorsys
+import hashlib
+import os
+import numpy
+import re
 
 from PIL import Image, ImageDraw, ImageFont, ImageChops
 
-class InvalidTemplateError(StandardError):
-    pass
+from django.conf import settings
+from django.contrib.staticfiles.finders import (
+    FileSystemFinder,
+    AppDirectoriesFinder
+)
 
-
-
-class InvalidColourError(StandardError):
-    pass
-
-
-
-class InvalidOpacityError(StandardError):
-    pass
-
+from .exceptions import (
+    InvalidTemplateError,
+    InvalidColourError,
+    InvalidOpacityError,
+    InvalidHueError
+)
 
 
 class Marker(object):
 
-    template = None
-    opacity  = None
-    text     = None
-    position = None
-    size     = None
-    colour   = None
+    template      = None
+    hue           = None
+    opacity       = None
+    text          = None
+    text_position = None
+    text_size     = None
+    text_colour   = None
 
-    def __init__(self, template=None, opacity=1, text="", position=(0,0), size=10, colour="000000"):
+    rgb_to_hsv = numpy.vectorize(colorsys.rgb_to_hsv)
+    hsv_to_rgb = numpy.vectorize(colorsys.hsv_to_rgb)
 
-        self.template = FileSystemFinder().find(template)
-        if not self.template:
-            self.template = AppDirectoriesFinder().find(template)
-        if not self.template:
-            raise InvalidTemplateError("%s is not a known template" % template)
+    def __init__(self, template, hue=0, opacity=1, text="", text_position=(0,0), text_size=10, text_colour="000000"):
+        """
+        Dynamic marker creation
+        
+          Required:
+            template: The path to file used as the basis for this marker
+          Optional:
+            opacity:       The opacity of the finished marker
+            hue:           A value between 0 and 360 dictating how to colourise the template
+            text:          The text string, if any to apply
+            text_position: The position of the text
+            text_size:     The size of the font used
+            text_colour:   The colour of the text, in hexadecimal
+        """
 
-        if not re.match("^[a-fA-F0-9]{6}$", colour):
-            raise InvalidColourError("%s does not appear to be a hex colour" % colour)
+        try:
+            self.hue = int(hue)
+            assert(self.hue >= 0 and self.hue <= 360)
+        except ValueError, AssertionError:
+            raise InvalidHueError("Hue must be an integer between -180 and 180")
 
-        if not isinstance(opacity, (int,float)) or opacity > 1 or opacity < 0:
+        if not re.match("^[a-fA-F0-9]{6}$", text_colour):
+            raise InvalidColourError("%s does not appear to be a hex colour" % text_colour)
+
+        if not isinstance(opacity, (int, float)) or opacity > 1 or opacity < 0:
             raise InvalidOpacityError("Opacity must be a float or integer <= 1 and >= 0")
 
-        self.opacity  = int(float(opacity) * float(255))
-        self.text     = text
-        self.position = position
-        self.size     = size
-        self.colour   = colour
+        if self.hue:
+            self.template = self._build_template_from_rgb(template)
+        else:
+            self.template = self._check_template_exists(template)
+
+        self.opacity       = int(float(opacity) * float(255))
+        self.text          = text
+        self.text_position = text_position
+        self.text_size     = text_size
+        self.text_colour   = text_colour
 
         self._hash = hashlib.md5(
-            "%s-%s-%s-%s-%s-%s" % (
+            "%s-%s-%s-%s-%s-%s-%s" % (
                 self.template,
+                self.hue,
                 self.opacity,
                 self.text,
-                self.position,
-                self.size,
-                self.colour
+                self.text_position,
+                self.text_size,
+                self.text_colour
             )
         ).hexdigest()
 
@@ -78,13 +101,24 @@ class Marker(object):
     def _get_marker(self):
 
         cache_file = os.path.join(settings.MEDIA_ROOT, "cache", "markers", "%s.png" % self._hash)
+
         try:
+
             return Image.open(cache_file)
+
         except IOError:
+
             base = self._get_base_image()
             text_overlay, text_alpha = self._get_text_layer(base)
             base.paste(text_overlay, (0,0), text_alpha)
+
+            try:
+                os.makedirs(os.path.dirname(cache_file))
+            except:
+                pass  # Directory exists, as it should
+
             base.save(cache_file, "PNG")
+
             return self._get_marker()
 
 
@@ -104,15 +138,26 @@ class Marker(object):
 
     def _get_text_layer(self, base):
 
-        # 2. Create a transparent text image
+        #
+        # Most of this logic was adapted from
+        # http://xxki.com/tutorial/pukiwiki.php?Python%2FPIL
+        #
+
+        # Create a transparent text image
         text_overlay = Image.new("RGB", base.size, (0,0,0))
         text_alpha   = Image.new("L", text_overlay.size, "black")
 
         # Make a grayscale image of the font, white on black.
         image_text = Image.new("L", text_overlay.size, 0)
         draw_text = ImageDraw.Draw(image_text)
-        font = ImageFont.truetype(os.path.join(settings.STATIC_ROOT, "cartography", "fonts", "DroidSans-Bold.ttf"), self.size)
-        draw_text.text(self.position, self.text, font=font, fill="white")
+        font_path = os.path.join(
+            settings.STATIC_ROOT,
+            "markers",
+            "fonts",
+            "DroidSans-Bold.ttf"
+        )
+        font = ImageFont.truetype(font_path, self.text_size)
+        draw_text.text(self.text_position, self.text, font=font, fill="white")
 
         # Add the white text to our collected alpha channel. Gray pixels around
         # the edge of the text will eventually become partially transparent
@@ -121,10 +166,82 @@ class Marker(object):
 
         # Make a solid color, and add it to the color layer on every pixel
         # that has even a little bit of alpha showing.
-        solidcolor = Image.new("RGBA", text_overlay.size, "#%s" % self.colour)
+        solidcolor = Image.new("RGBA", text_overlay.size, "#%s" % self.text_colour)
         immask = Image.eval(image_text, lambda p: 255 * (int(p != 0)))
         text_overlay = Image.composite(solidcolor, text_overlay, immask)
         text_overlay.putalpha(text_alpha)
         # overlay.save("transtext.png", "PNG") #save for testing
 
         return text_overlay, text_alpha
+
+
+    def _check_template_filename(self, path):
+
+        m = re.match(r"^(.*)\.(\w+)$", path)
+        if not m:
+            raise InvalidTemplateError("The template path supplied does not look like it points to an image file")
+
+        return m.group(1), m.group(2)
+
+
+    def _check_template_exists(self, path):
+
+        template = FileSystemFinder().find(path)
+        if not template:
+            template = AppDirectoriesFinder().find(path)
+        if not template:
+            raise InvalidTemplateError("%s is not a known template" % path)
+
+        return template
+
+
+    def _build_template_from_rgb(self, template):
+
+        image = self._colourize(Image.open(self._check_template_exists(template), "r"))
+
+        working_filename = os.path.join(
+            settings.MEDIA_ROOT,
+            "cache",
+            "markers",
+            "_workspace",
+            "%s.png" % hashlib.md5("%s-%s" % (template, self.hue))
+        )
+
+        try:
+            os.makedirs(os.path.dirname(working_filename))
+        except:
+            pass  # Directory exists, and that's cool
+
+        image.save(working_filename, "PNG")
+
+        return working_filename
+
+    #
+    # The following methods were shamelessly ripped from StackOverflow and are
+    # practically voodoo to me.
+    #
+    # Reference:
+    #   http://stackoverflow.com/questions/7274221/
+    #
+
+    def _shift_hue(self, arr, hout):
+
+        r, g, b, a = numpy.rollaxis(arr, axis=-1)
+        h, s, v = self.rgb_to_hsv(r, g, b)
+        h = hout
+        r, g, b = self.hsv_to_rgb(h, s, v)
+        arr = numpy.dstack((r, g, b, a))
+
+        return arr
+
+
+    def _colourize(self, image):
+
+        return Image.fromarray(
+            self._shift_hue(
+                numpy.array(
+                    numpy.asarray(image.convert('RGBA')).astype('float')),
+                    self.hue / float(360)
+            ).astype("uint8"),
+            "RGBA"
+        )
