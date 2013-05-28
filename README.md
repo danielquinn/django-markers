@@ -73,7 +73,7 @@ mymarker = Marker(
 ```
 
 
-## The Templates
+### The Templates
 
 The template path you pass to `django-markers`, must be part of one of your
 apps, and referenced as such.  So for example, if you have a template living in
