@@ -88,13 +88,19 @@ like so:
 
 ## Installation
 
-You can install it from GitHub using `pip`:
+You can install it from pypi using `pip`:
+
+```bash
+$ pip install django-markers
+```
+
+Or you can install it from GitHub:
 
 ```bash
 $ pip install git+https://github.com/danielquinn/django-markers.git#egg=django-markers
 ```
 
-In your `settings.py`:
+Then in your `settings.py`:
 
 ```python
 INSTALLED_APPS = (
