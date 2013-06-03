@@ -82,7 +82,7 @@ class Marker(object):
                 self.text_colour
             )
         ).hexdigest()
-        print(self._hash, self.template, self.hue, self.opacity, self.text, self.text_position, self.text_size, self.text_colour)
+
 
     def get_marker(self):
         """
