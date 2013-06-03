@@ -15,21 +15,15 @@ class MarkerView(View):
 
     def get(self, request, template=None, *args, **kwargs):
 
-        opacity = request.GET.get("opacity", 1)
-        try:
-            opacity = float(opacity)
-        except ValueError:
-            opacity = 1
-
         try:
             marker = Marker(
                 template=template,
-                hue=self._get_int("hue", 0),
+                hue=self._get_float("hue", 0),
                 text=request.GET.get("text",""),
                 text_position=(self._get_int("text_x", 0), self._get_int("text_y", 0)),
                 text_size=self._get_int("text_size", 11),
                 text_colour=self.request.GET.get("text_colour", "000000"),
-                opacity=opacity
+                opacity=self._get_float("opacity", 1)
             )
         except (InvalidTemplateError, InvalidColourError, InvalidOpacityError, InvalidHueError) as e:
             return HttpResponseBadRequest(e)
@@ -38,6 +32,17 @@ class MarkerView(View):
         marker.get_marker().save(response, "PNG")
 
         return response
+
+
+    def _get_float(self, key, default):
+
+        r = default
+        try:
+            r = float(self.request.GET.get(key, r))
+        except ValueError:
+            pass
+
+        return r
 
 
     def _get_int(self, key, default):
