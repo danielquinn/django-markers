@@ -88,19 +88,24 @@ class Marker(object):
         """
         Returns a compiled marker image object
         """
-
         return self._get_marker()
 
 
     def get_marker_url(self):
-
-        marker = self._get_marker()
-        return marker.filename.replace(settings.MEDIA_ROOT, settings.MEDIA_URL)
+        return self._get_marker().filename.replace(
+            settings.MEDIA_ROOT,
+            settings.MEDIA_URL
+        )
 
 
     def _get_marker(self):
 
-        cache_file = os.path.join(settings.MEDIA_ROOT, "cache", "markers", "%s.png" % self._hash)
+        cache_file = os.path.join(
+            settings.MEDIA_ROOT,
+            "cache",
+            "markers",
+            "%s.png" % self._hash
+        )
 
         try:
 
@@ -170,7 +175,6 @@ class Marker(object):
         immask = Image.eval(image_text, lambda p: 255 * (int(p != 0)))
         text_overlay = Image.composite(solidcolor, text_overlay, immask)
         text_overlay.putalpha(text_alpha)
-        # overlay.save("transtext.png", "PNG") #save for testing
 
         return text_overlay, text_alpha
 
