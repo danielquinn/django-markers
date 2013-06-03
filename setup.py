@@ -1,33 +1,37 @@
 import os
+import markers
 from setuptools import setup
 
-README = open(os.path.join(os.path.dirname(__file__), 'README.md')).read()
-
-# allow setup.py to be run from any path
+# Allow setup.py to be run from any path
 os.chdir(os.path.normpath(os.path.join(os.path.abspath(__file__), os.pardir)))
 
 setup(
-    name='django-markers',
-    version='0.1',
-    packages=['markers'],
+    name="django-markers",
+    version=markers.__version__,
+    packages=["markers"],
     include_package_data=True,
-    license='GPLv3',  # example license
-    description='A simple Django app to conduct Web-based polls.',
-    long_description=README,
-    url='https://github.com/danielquinn/django-markers/',
-    author='Daniel Quinn',
-    author_email='me@danielquinn.org',
+    license="GPLv3",
+    description="Dynamic map marker generation using template images and arbitrary text",
+    long_description=open(os.path.join(os.path.dirname(__file__), "README.md")).read(),
+    url="https://github.com/danielquinn/django-markers",
+    download_url="https://github.com/danielquinn/django-markers",
+    author="Daniel Quinn",
+    author_email="code@danielquinn.org",
+    maintainer="Daniel Quinn",
+    maintainer_url="code@danielquinn.org",
     install_requires=["PIL","numpy",],
     classifiers=[
-        'Environment :: Web Environment',
-        'Framework :: Django',
-        'Intended Audience :: Developers',
-        'License :: OSI Approved :: GPLv3',
-        'Operating System :: OS Independent',
-        'Programming Language :: Python',
-        'Programming Language :: Python :: 2.6',
-        'Programming Language :: Python :: 2.7',
-        'Topic :: Internet :: WWW/HTTP',
-        'Topic :: Internet :: WWW/HTTP :: Dynamic Content',
+    	"Development Status :: 4 - Beta",
+        "Environment :: Web Environment",
+        "Framework :: Django",
+        "Intended Audience :: Developers",
+        "License :: OSI Approved :: GNU General Public License v3 or later (GPLv3+)",
+        "Operating System :: POSIX",
+        "Operating System :: Unix",
+        "Programming Language :: Python",
+        "Programming Language :: Python :: 2.6",
+        "Programming Language :: Python :: 2.7",
+        "Topic :: Internet :: WWW/HTTP",
+        "Topic :: Internet :: WWW/HTTP :: Dynamic Content",
     ],
 )
