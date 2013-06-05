@@ -11,7 +11,7 @@ from ..models import Marker
 register = django_template.Library()
 
 @register.simple_tag
-def marker(template, hue=0, opacity=1, text="", text_x=0, text_y=0, text_size=10, text_colour="000000"):
+def marker(template, hue=0, opacity=1, text="", text_x=None, text_y=None, text_size=10, text_colour="000000"):
 
     try:
         marker = Marker(

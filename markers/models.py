@@ -33,7 +33,7 @@ class Marker(object):
     rgb_to_hsv = numpy.vectorize(colorsys.rgb_to_hsv)
     hsv_to_rgb = numpy.vectorize(colorsys.hsv_to_rgb)
 
-    def __init__(self, template, hue=0, opacity=1, text="", text_position=(0,0), text_size=10, text_colour="000000"):
+    def __init__(self, template, hue=0, opacity=1, text="", text_position=(None,None), text_size=10, text_colour="000000"):
         """
         Dynamic marker creation
         
@@ -67,7 +67,7 @@ class Marker(object):
 
         self.opacity       = int(float(opacity) * float(255))
         self.text          = text
-        self.text_position = text_position
+        self.text_position = list(text_position)
         self.text_size     = text_size
         self.text_colour   = text_colour
 
@@ -155,12 +155,24 @@ class Marker(object):
         # Make a grayscale image of the font, white on black.
         image_text = Image.new("L", text_overlay.size, 0)
         draw_text = ImageDraw.Draw(image_text)
+
         font_path = os.path.join(
             settings.STATIC_ROOT,
             "markers",
             "fonts",
             "DroidSans-Bold.ttf"
         )
+
+        # Thanks to http://stackoverflow.com/questions/1970807/center-middle-align-text-with-pil
+
+        image_width, image_height = base.size
+        text_width, text_height = draw_text.textsize(self.text)
+
+        if self.text_position[0] is None:
+            self.text_position[0] = (image_width - text_width) / 2
+        if self.text_position[1] is None:
+            self.text_position[1] = (image_height - text_height) / 2
+
         font = ImageFont.truetype(font_path, self.text_size)
         draw_text.text(self.text_position, self.text, font=font, fill="white")
 
