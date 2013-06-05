@@ -72,7 +72,6 @@ mymarker = Marker(
 )
 ```
 
-
 ### The Templates
 
 The template path you pass to `django-markers`, must be part of one of your
@@ -84,6 +83,23 @@ If you're calling the URL directly, then you'll append this path to the URL
 like so:
 
     https://localhost:8000/markers/mapping/img/markers/mytemplate.png?hue=105&opacity=0.8
+
+
+### A Note on Text Positioning
+
+By default, we try to centre text along the x/y axis, so if that's your
+intention, don't specify either.  Specifying an `x` value without a `y` one
+will assume `y` to be centred and vice versa.
+
+
+### A Note on Template Images
+
+You can use whatever image you like for your templates, but since the
+hue-shifting starts at red (0), and progresses through the spectrum to red
+again at 360, you'd do well to use a redish image as your template.
+Otherwise, requests that dont' specify a `hue` will look out of step with ones
+that have `hue` set to `1`.
+
 
 
 ## Installation
