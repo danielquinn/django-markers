@@ -19,7 +19,11 @@ setup(
     author_email="code@danielquinn.org",
     maintainer="Daniel Quinn",
     maintainer_email="code@danielquinn.org",
-    install_requires=["django", "pillow","numpy",],
+    install_requires=[
+        "Django >= 1.4",
+        "Pillow>=2.0.0",
+        "numpy>=1.7.1",
+    ],
     classifiers=[
     	"Development Status :: 4 - Beta",
         "Environment :: Web Environment",
