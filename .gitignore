@@ -1,5 +1,6 @@
 *.log
 *.pot
 *.pyc
+build
 django_markers.egg-info
 dist
