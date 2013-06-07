@@ -51,7 +51,7 @@ class Marker(object):
         try:
             self.hue = int(hue)
             assert(self.hue >= 0 and self.hue <= 360)
-        except ValueError, AssertionError:
+        except (ValueError, AssertionError):
             raise InvalidHueError("Hue must be an integer between -180 and 180")
 
         if not re.match("^[a-fA-F0-9]{6}$", text_colour):
