@@ -157,7 +157,8 @@ class Marker(object):
         draw_text = ImageDraw.Draw(image_text)
 
         font_path = os.path.join(
-            settings.STATIC_ROOT,
+            os.path.dirname(__file__),
+            "static",
             "markers",
             "fonts",
             "DroidSans-Bold.ttf"
