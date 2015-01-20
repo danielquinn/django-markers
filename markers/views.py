@@ -36,7 +36,7 @@ class MarkerView(View):
         except (InvalidTemplateError, InvalidColourError, InvalidOpacityError, InvalidHueError) as e:
             return HttpResponseBadRequest(e)
 
-        response = HttpResponse(mimetype="image/png")
+        response = HttpResponse(content_type="image/png")
         marker.get_marker().save(response, "PNG")
 
         return response
