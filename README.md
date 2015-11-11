@@ -146,6 +146,9 @@ use `Pillow` though, since that's what this was developed against.
 Additionally, `numpy` is required to handle the hue-shifting.  Both will
 install automatically if you follow the installation instructions above.
 
+In addition to these Python dependencies, Django 1.6+ is required if you
+intend to make use of the on-the-fly generation via calling a specifric URL.
+
 
 ## Licensing
 

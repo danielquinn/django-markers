@@ -20,7 +20,7 @@ setup(
     maintainer="Daniel Quinn",
     maintainer_email="code@danielquinn.org",
     install_requires=[
-        "Django>=1.4",
+        "Django>=1.6",
         "Pillow>=2.0.0",
         "numpy>=1.7.1",
     ],
