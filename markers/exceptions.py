@@ -1,17 +1,17 @@
-class InvalidTemplateError(StandardError):
+class InvalidTemplateError(Exception):
     pass
 
 
 
-class InvalidColourError(StandardError):
+class InvalidColourError(Exception):
     pass
 
 
 
-class InvalidOpacityError(StandardError):
+class InvalidOpacityError(Exception):
     pass
 
 
 
-class InvalidHueError(StandardError):
+class InvalidHueError(Exception):
     pass
