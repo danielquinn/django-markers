@@ -32,7 +32,7 @@ down from the upper left corner of the template, with an opacity of ``50%``, a
 hue-shift of ``105``, and using the hex colour ``#333333`` for the text.  All of the
 arguments, save for the first, are optional:
 
-.. code::
+.. code:: django
 
     {% load markers %}
     {% marker 'path/to/template.png' text='42' text_x=3 text_y=3 opacity=0.5 hue=105 text_colour='333333' %}
@@ -40,7 +40,7 @@ arguments, save for the first, are optional:
 Typically, you'll use this in your template to assign marker paths to some
 javascript variables:
 
-.. code::
+.. code:: django
 
     <script>
       var marker1 = "{% marker 'path/to/template.png' text='1' %}";
