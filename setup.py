@@ -12,7 +12,7 @@ setup(
     include_package_data=True,
     license="GPLv3",
     description="Dynamic map marker generation using template images and arbitrary text",
-    long_description=open(os.path.join(os.path.dirname(__file__), "README.md")).read(),
+    long_description=open(os.path.join(os.path.dirname(__file__), "README.rst")).read(),
     url="https://github.com/danielquinn/django-markers",
     download_url="https://github.com/danielquinn/django-markers",
     author="Daniel Quinn",
