@@ -72,15 +72,17 @@ class Marker(object):
         self.text_colour   = text_colour
 
         self._hash = hashlib.md5(
-            "%s-%s-%s-%s-%s-%s-%s" % (
-                self.template,
-                self.hue,
-                self.opacity,
-                self.text,
-                self.text_position,
-                self.text_size,
-                self.text_colour
-            )
+            (
+                u"%s-%s-%s-%s-%s-%s-%s" % (
+                    self.template,
+                    self.hue,
+                    self.opacity,
+                    self.text,
+                    self.text_position,
+                    self.text_size,
+                    self.text_colour
+                )
+            ).encode('utf-8')
         ).hexdigest()
 
 
