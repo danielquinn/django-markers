@@ -218,12 +218,13 @@ class Marker(object):
 
         image = self._colourize(Image.open(self._check_template_exists(template), "r"))
 
+        to_hash = ("%s-%s" % (template, self.hue)).encode('ascii')
         working_filename = os.path.join(
             settings.MEDIA_ROOT,
             "cache",
             "markers",
             "_workspace",
-            "%s.png" % hashlib.md5("%s-%s" % (template, self.hue)).hexdigest()
+            "%s.png" % hashlib.md5(to_hash).hexdigest()
         )
 
         try:
