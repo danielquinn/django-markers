@@ -112,8 +112,8 @@ A Note on Template Images
 You can use whatever image you like for your templates, but since the
 hue-shifting starts at red (0), and progresses through the spectrum to red
 again at 360, you'd do well to use a redish image as your template.
-Otherwise, requests that dont' specify a ``hue`` will look out of step with ones
-that have ``hue`` set to ``1``.
+Otherwise, requests that don't specify a ``hue`` will look out of step with
+ones that have ``hue`` set to ``1``.
 
 
 
