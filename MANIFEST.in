@@ -1,5 +1,0 @@
-include README.md
-include MANIFEST.in
-recursive-include markers *
-recursive-include COPYING *
-

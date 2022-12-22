@@ -1,5 +1,12 @@
 # Changes
 
+## 1.4.0
+
+Fixed a fun XSS problem where the markers were rendering just fine, but the
+*error message* displayed in the event of a 4xx error could include malicious
+code.
+
+
 ## 1.3.2
 
 Bugfix: Encode the template & hue before hashing

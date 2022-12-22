@@ -1,0 +1,75 @@
+[tool.poetry]
+name = "django-markers"
+version = "1.4.0"
+description = "Dynamic map marker generation using template images and arbitrary text"
+authors = ["Daniel Quinn <code@danielquinn.org>"]
+license = "GPL-3.0-or-later"
+readme = "README.md"
+repository = "https://github.com/danielquinn/django-markers"
+classifiers = [
+  "Development Status :: 4 - Beta",
+  "Environment :: Web Environment",
+  "Framework :: Django",
+  "Intended Audience :: Developers",
+  "License :: OSI Approved :: GNU General Public License v3 or later (GPLv3+)",
+  "Operating System :: POSIX",
+  "Operating System :: Unix",
+  "Programming Language :: Python",
+  "Programming Language :: Python :: 2.6",
+  "Programming Language :: Python :: 2.7",
+  "Programming Language :: Python :: 3.5",
+  "Programming Language :: Python :: 3.6",
+  "Topic :: Internet :: WWW/HTTP",
+  "Topic :: Internet :: WWW/HTTP :: Dynamic Content"
+]
+packages = [{include = "markers"}]
+
+
+[tool.poetry.dependencies]
+python = "^3.6"
+django = ">=3.2"
+pillow = ">=3.1.0"
+numpy = "^1.14.0"
+
+
+[tool.poetry.group.dev.dependencies]
+#black = "^22.12.0"
+#isort = "^5.11.4"
+
+
+[tool.isort]
+atomic = true
+multi_line_output = 3
+case_sensitive = true
+lines_after_imports = 2
+lines_between_types = 1
+combine_as_imports = true
+default_section = "THIRDPARTY"
+known_framework = [
+  "django",
+]
+line_length = 79
+include_trailing_comma = true
+skip_glob = [
+  '**/migrations/**.py'
+]
+sections=[
+  "FUTURE",
+  "STDLIB",
+  "FRAMEWORK",
+  "THIRDPARTY",
+  "FIRSTPARTY",
+  "LOCALFOLDER"
+]
+
+
+[tool.black]
+line-length = 79
+target-version = ['py38']
+include = '\.pyi?$'
+exclude = '/(\.git|\.venv|.*/migrations.*)/'
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

@@ -186,7 +186,9 @@ class Marker:
             self.text_position[1] = (image_height - text_height) / 2
 
         font = ImageFont.truetype(font_path, self.text_size)
-        draw_text.text(self.text_position, self.text, font=font, fill="white")
+        draw_text.text(
+            self.text_position, escape(self.text), font=font, fill="white"
+        )
 
         # Add the white text to our collected alpha channel. Gray pixels around
         # the edge of the text will eventually become partially transparent

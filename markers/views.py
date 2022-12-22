@@ -1,6 +1,7 @@
 from __future__ import absolute_import
 
 from django.http import HttpResponse, HttpResponseBadRequest
+from django.template.defaultfilters import escape
 from django.views.generic import View
 
 from .exceptions import (
@@ -39,7 +40,7 @@ class MarkerView(View):
             InvalidOpacityError,
             InvalidHueError,
         ) as e:
-            return HttpResponseBadRequest(e)
+            return HttpResponseBadRequest(escape(str(e)))
 
         response = HttpResponse(content_type="image/png")
         marker.get_marker().save(response, "PNG")
